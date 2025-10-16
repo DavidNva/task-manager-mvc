@@ -17,6 +17,17 @@ namespace TaskManagerMVC
         {
 
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<TaskItem>().Property(t => t.Title).HasMaxLength(300).IsRequired();//Lo comentamos porque vamos a usar mejor Data Annotations en la clase TaskItem.cs. Pero si queremos probar que funciona, descomentar y comentar las Data Annotations en TaskItem.cs  y ejecutar el comando Add-Migration TitleWithFluentAPI1
+        }//A nivel de entity framework core esto es lo mismo que si lo hacemos con Data Annotations
+         //Sin embargo existe una diferencia fundamental entre utilizar el API Fluent (esto que hicimos) y usar Data Annotations. Dado que asp.net core es capaz de validar la data que recibimos de una accion
+         //Entonces si yo tengo en la clase con sus data anotations y alli al enviar la data se valida si se cumple dichas reglas de negocio, entonces si no se cumple, el ModelState.IsValid en el controlador me devuelve false y puedo manejar ese error.
+         //Si lo hacemos con API Fluent, entonces asp.net core mvc es incapaz de verificar utilizando el is valid que usamos en proyectos pasados cuando validabamos primero el modelo, en proyectos anteriores (control presupuesto), porque el modelo no tiene dichas reglas de negocio.
+
+
+
         public DbSet<TaskItem> Tasks { get; set; }//Ya con esto , ya tenemos nuestra tabla Tasks en la base de datos.
 
 
