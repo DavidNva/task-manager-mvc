@@ -29,7 +29,7 @@ namespace TaskManagerMVC
 
 
         public DbSet<TaskItem> Tasks { get; set; }//Ya con esto , ya tenemos nuestra tabla Tasks en la base de datos.
-
+        public DbSet<Step> Steps { get; set; } //Tabla Steps para los pasos de cada tarea.
 
 
         //DbContext es la clase base, la pieza central para trabajar con Entity Framework Core 
