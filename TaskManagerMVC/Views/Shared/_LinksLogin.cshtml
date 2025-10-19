@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity@* //esto permite usar IdentityUser y SignInManager en la vista *@
+@inject SignInManager<IdentityUser> SignInManager 
+@* //esto permite acceder al SignInManager desde la vista *@
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <span class="nav-link text-dark">Hola, @User.Identity.Name</span>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-action="logout" asp-controller="Usuarios">
+                <button type="submit" class="nav-link btn btn-light text-dark">Cerrar Sesión</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        //en teoria no es necesario poner estos links porque el layout de usuarios solo se usa en las vistas de registro y login
+        //pero los dejo por si acaso
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Usuarios" asp-action="Registro">Registro</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Usuarios" asp-action="Login">Login</a>
+        </li>
+    }
+</ul>

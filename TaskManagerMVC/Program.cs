@@ -25,6 +25,7 @@ builder.Services.AddAuthentication();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
 {
     opciones.SignIn.RequireConfirmedAccount = false;//Para que no pida confirmacion de cuenta al registrar un nuevo usuario.
+    opciones.Lockout.MaxFailedAccessAttempts = 5;//Numero maximo de intentos fallidos antes de bloquear la cuenta//AUNQUE POR EL momentno no lo estamos usando en el login esta es la forma de configurarlo. Estandarmente se recomienda 5, porque es un buen equilibrio entre seguridad y usabilidad. Podria ser igual el numero 3 o 7 dependiendo del contexto de la aplicacion. pero 5 es comunmente aceptado.
 }).AddEntityFrameworkStores<ApplicationDBContext>()
 .AddDefaultTokenProviders()
 .AddErrorDescriber<MensajesDeErrorIdentity>();
