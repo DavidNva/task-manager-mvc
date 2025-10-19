@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TaskManagerMVC.Entities;
 namespace TaskManagerMVC
 {
     //El nombre ApplicationDBContext puede ser cualquiera, es solo una convención. En si se hereda de DbContext
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext
     {
         //DbContext es la clase base, la pieza central para trabajar con Entity Framework Core 
         //y representa una sesión con la base de datos, permitiendo realizar consultas y guardar cambios.   
