@@ -19,8 +19,11 @@ namespace TaskManagerMVC.Entities
         //public DateTime? DueDate { get; set; }
 
         public List<Step> Steps { get; set; }//Con esto si cargo una tarea, tambien cargo sus pasos asociados.
-        //public List<Step> Steps { get; set; } = new List<Step>();
-        //La relacion es de uno a muchos, es decir una tarea puede tener muchos pasos asociados y cada paso pertenece a una sola tarea.
+                                             //public List<Step> Steps { get; set; } = new List<Step>();
+                                             //La relacion con Steps es de uno a muchos, es decir una tarea puede tener muchos pasos asociados y cada paso pertenece a una sola tarea.
+        public List<AttachedFile> AttachedFiles { get; set; }//Con esto si cargo una tarea, tambien cargo sus pasos asociados.
+        //La relacion con AttachedFiles es de uno a muchos, es decir una tarea puede tener muchos archivos adjuntos asociados y cada archivo adjunto pertenece a una sola tarea.
+
 
         //Ahora bien, si queremos que algun campo sea nullable, por ejemplo Description, entonces podemos hacer lo siguiente: 
         //public string? Description { get; set; } //El ? indica que puede ser nulo 
