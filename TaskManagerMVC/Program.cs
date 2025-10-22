@@ -21,7 +21,13 @@ builder.Services.AddControllersWithViews(opciones =>
 });//Agregamos el filtro global a todas las paginas para que requieran autenticacion, a excepcion de las que tengan el atributo [AllowAnonymous]
 
 builder.Services.AddDbContext<ApplicationDBContext>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
-builder.Services.AddAuthentication();
+
+builder.Services.AddAuthentication().AddMicrosoftAccount(opciones =>
+{
+    opciones.ClientId = builder.Configuration["MicrosoftClientId"];
+    opciones.ClientSecret = builder.Configuration["MicrosoftSecretId"];
+});
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(opciones =>
 {
     opciones.SignIn.RequireConfirmedAccount = false;//Para que no pida confirmacion de cuenta al registrar un nuevo usuario.

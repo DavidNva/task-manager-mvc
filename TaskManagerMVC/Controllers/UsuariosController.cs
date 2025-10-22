@@ -119,7 +119,6 @@ namespace TaskManagerMVC.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
         public async Task<IActionResult> RegistrarUsuarioExterno(string returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");//Si no hay returnUrl, redirige a la raiz del sitio
