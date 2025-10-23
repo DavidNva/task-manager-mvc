@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TaskManagerMVC.Models;
 
@@ -11,10 +12,13 @@ namespace TaskManagerMVC.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
-        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly ApplicationDBContext _dbContext;
+
+        public UsuariosController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, ApplicationDBContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _dbContext = dbContext;
         }
 
         [AllowAnonymous]
@@ -171,6 +175,22 @@ namespace TaskManagerMVC.Controllers
             }
             mensaje = "Ha ocurrido un error agregando el login";
             return RedirectToAction(nameof(Login), new { mensaje });//Redirigimos al login con el mensaje de error
+        }
+
+        [HttpGet]
+        public async Task<IActionResult>Listado(string mensaje = null)
+        {
+            var usuarios = await _dbContext.Users.Select(u => new UsuarioViewModel
+            {
+                Email = u.Email
+            }).ToListAsync();
+
+            var model = new UsuariosListadoViewModel
+            {
+                Usuarios = usuarios,
+                Mensaje = mensaje
+            };
+            return View(model);
         }
     }
 }
