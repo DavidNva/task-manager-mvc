@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace TaskManagerMVC.Entities
 {
@@ -17,11 +18,18 @@ namespace TaskManagerMVC.Entities
         //public bool IsCompleted { get; set; }
         public DateTime CreatedAt { get; set; }
         //public DateTime? DueDate { get; set; }
-
+        public string UserCreatorId { get; set; }//Clave foranea a IdentityUser
+        //La relacion con IdentityUser es de muchos a uno, es decir, muchas tareas pueden ser creadas por un solo usuario. Ahora como sabe Entity Framework que esta propiedad es una clave foranea a IdentityUser? Lo sabe porque sigue la convención de nombrado <NavigationPropertyName>Id, donde NavigationPropertyName es el nombre de la propiedad de navegación que apunta a la entidad relacionada. Y como relaciona a usuario y no otra entidad? Porque la propiedad de navegacion es de tipo IdentityUser. Es decir toma el tipo de la propiedad de navegacion siguiente en el codigo.
+        //En este caso por ejemplo, un caso hipotetico seria que si tuvieramos otra entidad llamada AdminUser y quisieramos relacionar TaskItem con AdminUser, entonces tendriamos que tener una propiedad de navegacion llamada AdminUser y la clave foranea seria AdminUserId. pero por ejemplo, si tuvieramos un UserCreatorId y despues colocamos una propiedad de navegacion llamada OtrasTareas, entonces Entity Framework no sabria a que entidad relacionar la clave foranea UserCreatorId. Lo generaria pero una clase o relacion incorrecta.
+        public IdentityUser UserCreator { get; set; }//Propiedad de navegacion a IdentityUser. Ahora, porque es necesario colocar esta si ya tenemos la clave foranea UserCreatorId?
+                                                     //La razon es que con esta propiedad de navegacion podemos acceder a los datos del usuario creador de la tarea directamente desde la tarea.
+                                                     //Es decir, si tenemos una instancia de TaskItem, podemos acceder al usuario creador de la siguiente manera: taskItem.UserCreator
+                                                     //Si no tuvieramos esta propiedad de navegacion, tendriamos que hacer una consulta adicional a la tabla de usuarios para obtener los datos del usuario creador.
+                                                     //Entonces, en resumen, la propiedad de navegacion nos facilita el acceso a los datos relacionados y nos evita tener que hacer consultas adicionales.
         public List<Step> Steps { get; set; }//Con esto si cargo una tarea, tambien cargo sus pasos asociados.
                                              //public List<Step> Steps { get; set; } = new List<Step>();
                                              //La relacion con Steps es de uno a muchos, es decir una tarea puede tener muchos pasos asociados y cada paso pertenece a una sola tarea.
-        public List<AttachedFile> AttachedFiles { get; set; }//Con esto si cargo una tarea, tambien cargo sus pasos asociados.
+        public List<AttachedFile> AttachedFiles { get; set; }
         //La relacion con AttachedFiles es de uno a muchos, es decir una tarea puede tener muchos archivos adjuntos asociados y cada archivo adjunto pertenece a una sola tarea.
 
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using TaskManagerMVC.Models;
 
@@ -178,6 +179,7 @@ namespace TaskManagerMVC.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Servicios.Constantes.RolAdmin)]
         public async Task<IActionResult>Listado(string mensaje = null)
         {
             var usuarios = await _dbContext.Users.Select(u => new UsuarioViewModel
@@ -191,6 +193,33 @@ namespace TaskManagerMVC.Controllers
                 Mensaje = mensaje
             };
             return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Servicios.Constantes.RolAdmin)]
+        public async Task<IActionResult> HacerAdmin(string email)
+        {
+            var usuario = await _dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();//Buscamos el usuario por email el primero que coincida sino devuelve null que es el valor por defecto de FirstOrDefaultAsync
+            if(usuario == null)
+            {
+                return NotFound();
+            }
+            await _userManager.AddToRoleAsync(usuario, Servicios.Constantes.RolAdmin);
+            return RedirectToAction("Listado", routeValues: new {mensaje = $"Rol asignado correctamente a {email}"});
+
+        }
+        [HttpPost]
+        [Authorize(Roles = Servicios.Constantes.RolAdmin)]
+        public async Task<IActionResult> RemoverAdmin(string email)
+        {
+            var usuario = await _dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();//Buscamos el usuario por email el primero que coincida sino devuelve null que es el valor por defecto de FirstOrDefaultAsync
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+            await _userManager.RemoveFromRoleAsync(usuario, Servicios.Constantes.RolAdmin);
+            return RedirectToAction("Listado", routeValues: new { mensaje = $"Rol removido correctamente a {email}" });
+
         }
     }
 }
