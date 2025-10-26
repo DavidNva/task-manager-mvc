@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using TaskManagerMVC.Models;
+using TaskManagerMVC.Services;
 
 namespace TaskManagerMVC.Controllers
 {
@@ -62,7 +62,7 @@ namespace TaskManagerMVC.Controllers
             {
                 ViewData["mensaje"] = mensaje;
             }
-         
+
             return View();
             //Puede ser confuso que si arriba llega null el mensaje, y abajo hacemos el chequeo de null, pero es para que si llega un mensaje desde otra accion (como en el caso de login externo) lo muestre en la vista. 
             //Para que lo entiendas, en la vista Login.cshtml tenemos esto: @if(ViewData["mensaje"] != null) { <div class="alert alert-danger">@ViewData["mensaje"]</div> } y como se llena ese mensaje ? Pues desde aqui, si llega un mensaje por parametro, lo asignamos a ViewData["mensaje"] para que la vista lo pueda mostrar
@@ -128,7 +128,7 @@ namespace TaskManagerMVC.Controllers
         {
             returnUrl = returnUrl ?? Url.Content("~/");//Si no hay returnUrl, redirige a la raiz del sitio
             var mensaje = "";
-            if(remoteError != null)
+            if (remoteError != null)
             {
                 mensaje = $"Error de proveedor externo: {remoteError}";
                 return RedirectToAction("login", new { mensaje });
@@ -149,7 +149,7 @@ namespace TaskManagerMVC.Controllers
                 return LocalRedirect(returnUrl);
             }
             string email = "";
-            if(info.Principal.HasClaim(c => c.Type==ClaimTypes.Email))
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
             {
                 email = info.Principal.FindFirstValue(ClaimTypes.Email);//Obtenemos el email del usuario desde el proveedor externo, como Google o Facebook. El finalValue es el valor del claim, que en este caso es el email y dice first porque puede haber varios claims del mismo tipo
             }
@@ -161,7 +161,7 @@ namespace TaskManagerMVC.Controllers
 
             var usuario = new IdentityUser { UserName = email, Email = email };
             var resultadoCreacionUsuario = await _userManager.CreateAsync(usuario);
-            if(!resultadoCreacionUsuario.Succeeded)
+            if (!resultadoCreacionUsuario.Succeeded)
             {
                 //mensaje = "Error creando el usuario";
                 mensaje = resultadoCreacionUsuario.Errors.First().Description;
@@ -169,7 +169,7 @@ namespace TaskManagerMVC.Controllers
             }
             var resultadoAgregarLogin = await _userManager.AddLoginAsync(usuario, info);//Asociamos el login externo con el usuario que acabamos de crear
 
-            if(resultadoAgregarLogin.Succeeded)
+            if (resultadoAgregarLogin.Succeeded)
             {
                 await _signInManager.SignInAsync(usuario, isPersistent: true, info.LoginProvider);//Hacemos el login del usuario que acabamos de crear, con el proveedor externo
                 return LocalRedirect(returnUrl);
@@ -179,13 +179,13 @@ namespace TaskManagerMVC.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Servicios.Constantes.RolAdmin)]
-        public async Task<IActionResult>Listado(string mensaje = null)
+        [Authorize(Roles = Constantes.RolAdmin)]
+        public async Task<IActionResult> Listado(string mensaje = null)
         {
             var usuarios = await _dbContext.Users.Select(u => new UsuarioViewModel
             {
                 Email = u.Email
-            }).ToListAsync();
+            }).ToListAsync();//Lo hacemos asi para no exponer datos sensibles de los usuarios como el PasswordHash, SecurityStamp, etc., ademas es to list async porque es una operacion asincrona a la base de datos
 
             var model = new UsuariosListadoViewModel
             {
@@ -196,20 +196,20 @@ namespace TaskManagerMVC.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = Servicios.Constantes.RolAdmin)]
+        [Authorize(Roles = Constantes.RolAdmin)]
         public async Task<IActionResult> HacerAdmin(string email)
         {
             var usuario = await _dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();//Buscamos el usuario por email el primero que coincida sino devuelve null que es el valor por defecto de FirstOrDefaultAsync
-            if(usuario == null)
+            if (usuario == null)
             {
                 return NotFound();
             }
-            await _userManager.AddToRoleAsync(usuario, Servicios.Constantes.RolAdmin);
-            return RedirectToAction("Listado", routeValues: new {mensaje = $"Rol asignado correctamente a {email}"});
+            await _userManager.AddToRoleAsync(usuario, Constantes.RolAdmin);
+            return RedirectToAction("Listado", routeValues: new { mensaje = $"Rol asignado correctamente a {email}" });
 
         }
         [HttpPost]
-        [Authorize(Roles = Servicios.Constantes.RolAdmin)]
+        [Authorize(Roles = Constantes.RolAdmin)]
         public async Task<IActionResult> RemoverAdmin(string email)
         {
             var usuario = await _dbContext.Users.Where(u => u.Email == email).FirstOrDefaultAsync();//Buscamos el usuario por email el primero que coincida sino devuelve null que es el valor por defecto de FirstOrDefaultAsync
@@ -217,7 +217,7 @@ namespace TaskManagerMVC.Controllers
             {
                 return NotFound();
             }
-            await _userManager.RemoveFromRoleAsync(usuario, Servicios.Constantes.RolAdmin);
+            await _userManager.RemoveFromRoleAsync(usuario, Constantes.RolAdmin);
             return RedirectToAction("Listado", routeValues: new { mensaje = $"Rol removido correctamente a {email}" });
 
         }

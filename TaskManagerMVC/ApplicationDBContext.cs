@@ -20,7 +20,7 @@ namespace TaskManagerMVC
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder);//Esto es para que se apliquen las configuraciones por defecto de IdentityDbContext, si no lo ponemos, las tablas de identidad no se crearán correctamente. y ademas es necesario para usar API Fluent junto con IdentityDbContext.
             //modelBuilder.Entity<TaskItem>().Property(t => t.Title).HasMaxLength(300).IsRequired();//Lo comentamos porque vamos a usar mejor Data Annotations en la clase TaskItem.cs. Pero si queremos probar que funciona, descomentar y comentar las Data Annotations en TaskItem.cs  y ejecutar el comando Add-Migration TitleWithFluentAPI1
         }//A nivel de entity framework core esto es lo mismo que si lo hacemos con Data Annotations
          //Sin embargo existe una diferencia fundamental entre utilizar el API Fluent (esto que hicimos) y usar Data Annotations. Dado que asp.net core es capaz de validar la data que recibimos de una accion

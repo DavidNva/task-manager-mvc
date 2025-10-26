@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using TaskManagerMVC.Models;
 
 namespace TaskManagerMVC.Controllers
@@ -8,13 +9,17 @@ namespace TaskManagerMVC.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public IStringLocalizer<HomeController> _localizer { get; }
+
+        public HomeController(ILogger<HomeController> logger, IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
         {
+            ViewBag.Saludo = _localizer["Buenos días"];//Asi podriamos tener 
             return View();
         }
 

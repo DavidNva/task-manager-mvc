@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using TaskManagerMVC;
 using TaskManagerMVC.Services;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +21,7 @@ var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
 builder.Services.AddControllersWithViews(opciones =>
 {
     opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
-});//Agregamos el filtro global a todas las paginas para que requieran autenticacion, a excepcion de las que tengan el atributo [AllowAnonymous]
+}).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);//Agregamos el filtro global a todas las paginas para que requieran autenticacion, a excepcion de las que tengan el atributo [AllowAnonymous]
 
 builder.Services.AddDbContext<ApplicationDBContext>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
 
@@ -46,8 +49,21 @@ builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.Ap
     opciones.LogoutPath = "/Usuarios/Login";//Redirige a esta ruta cuando cierre sesion
     opciones.AccessDeniedPath = "/Usuarios/Login";//Redirige a esta ruta cuando no tenga permisos para acceder a una pagina
 });
+
+builder.Services.AddLocalization(opciones =>
+{
+    opciones.ResourcesPath = "Resources";//Carpeta donde se encuentran los archivos de recursos
+});
+
 var app = builder.Build();
 
+var culturasUISoportadas = new[] { "es", "en" };
+app.UseRequestLocalization(opciones =>
+{
+    opciones.DefaultRequestCulture = new RequestCulture("es");//Cultura por defecto
+    opciones.SupportedUICultures = culturasUISoportadas.
+    Select(cultura => new CultureInfo(cultura)).ToList();//Culturas soportadas las cuales las definimos en el array para que la aplicacion soporte español e ingles
+});
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
