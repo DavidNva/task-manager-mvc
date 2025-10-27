@@ -61,12 +61,12 @@ builder.Services.AddLocalization(opciones =>
 
 var app = builder.Build();
 
-var culturasUISoportadas = new[] { "es", "en" };
+
 app.UseRequestLocalization(opciones =>
 {
     opciones.DefaultRequestCulture = new RequestCulture("es");//Cultura por defecto
-    opciones.SupportedUICultures = culturasUISoportadas.
-    Select(cultura => new CultureInfo(cultura)).ToList();//Culturas soportadas las cuales las definimos en el array para que la aplicacion soporte español e ingles
+    opciones.SupportedUICultures = Constantes.CulturasUISoportadas.
+    Select(cultura => new CultureInfo(cultura.Value)).ToList();//Culturas soportadas las cuales las definimos en el array para que la aplicacion soporte español e ingles
 });
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

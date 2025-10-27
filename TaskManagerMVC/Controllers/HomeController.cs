@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using TaskManagerMVC.Models;
-
+using Microsoft.AspNetCore.Localization;
 namespace TaskManagerMVC.Controllers
 {
     public class HomeController : Controller
@@ -23,9 +23,14 @@ namespace TaskManagerMVC.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult ChangeLanguage(string cultura, string urlRetorno)
         {
-            return View();
+            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(cultura)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(5) }
+            );
+            return LocalRedirect(urlRetorno);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -33,5 +38,7 @@ namespace TaskManagerMVC.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+    
+
     }
 }
