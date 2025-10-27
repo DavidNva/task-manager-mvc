@@ -20,8 +20,12 @@ var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
 // Add services to the container.
 builder.Services.AddControllersWithViews(opciones =>
 {
-    opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
-}).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);//Agregamos el filtro global a todas las paginas para que requieran autenticacion, a excepcion de las que tengan el atributo [AllowAnonymous]
+    opciones.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));//Agregamos el filtro global a todas las paginas para que requieran autenticacion, a excepcion de las que tengan el atributo [AllowAnonymous]
+}).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).
+AddDataAnnotationsLocalization(opciones =>
+{
+    opciones.DataAnnotationLocalizerProvider = (_, factoria)=>factoria.Create(typeof(SharedResource));//Indicamos que los recursos de localizacion para las anotaciones de datos estaran en la clase SharedResource, es decir que todos los archivos de recursos .resx estaran asociados a esa clase.
+});
 
 builder.Services.AddDbContext<ApplicationDBContext>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
 
