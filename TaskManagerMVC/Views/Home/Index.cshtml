@@ -13,11 +13,11 @@
 <div id="contenedor-listado-tareas" class="text-center">
     <div class="text-start" data-bind="foreach: tareas">
         <div name="tarea" class="border mb-2 p-2" style="cursor: pointer">
-            <div data-bind="text: titulo, hidden: esNuevo" class="fw-bold">
+            <div data-bind="text: title, hidden: esNuevo" class="fw-bold">
             </div>
 
-            <input type="text" name="titulo-tarea" class="input-group text-dark" autocomplete="off" 
-                data-bind="value:titulo, visible: esNuevo,
+            <input type="text" name="title-tarea" class="input-group text-dark" autocomplete="off" 
+                data-bind="value:title, visible: esNuevo,
                         event: {focusout: manegarFocusOutTituloTarea}" />
         </div>
     </div>
@@ -34,7 +34,7 @@
 
     <script src="~/js/Tareas.js" asp-append-version="true"></script>
     <script>
-      
+        const urlTareas = "/api/tareas";
         // const tareaListadoViewModel = {
         //     tareas: ko.observableArray([]),
         //     cargando: ko.observable(true)
@@ -52,10 +52,10 @@
             })
         }//Ahora podemos colocar el self.noHayTareas
 
-        function TareaElementoListadoViewModel({id, titulo}){
+        function TareaElementoListadoViewModel({id, title}){
             var self = this;
             self.id = ko.observable(id);
-            self.titulo = ko.observable(titulo);
+            self.title = ko.observable(title);
             self.esNuevo = ko.pureComputed(function(){
                 return self.id() ==0;
             })
@@ -63,10 +63,7 @@
 
         const tareaListadoViewModel = new tareaListadoViewModelFn();
 
-        setTimeout(() => {
-            tareaListadoViewModel.cargando(false);
-        }, 100);
-
+        obtenerTareas();
 
         ko.applyBindings(tareaListadoViewModel, document.getElementById('contenedor-listado-tareas'));
 

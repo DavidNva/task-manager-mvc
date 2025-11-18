@@ -58,7 +58,7 @@ builder.Services.AddLocalization(opciones =>
 {
     opciones.ResourcesPath = "Resources";//Carpeta donde se encuentran los archivos de recursos
 });
-
+builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();//Registramos el servicio para obtener el usuario autenticado
 var app = builder.Build();
 
 
