@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using TaskManagerMVC;
 using TaskManagerMVC.Services;
 
@@ -25,7 +25,11 @@ builder.Services.AddControllersWithViews(opciones =>
 }).AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix).
 AddDataAnnotationsLocalization(opciones =>
 {
-    opciones.DataAnnotationLocalizerProvider = (_, factoria)=>factoria.Create(typeof(SharedResource));//Indicamos que los recursos de localizacion para las anotaciones de datos estaran en la clase SharedResource, es decir que todos los archivos de recursos .resx estaran asociados a esa clase.
+    opciones.DataAnnotationLocalizerProvider = (_, factoria) => 
+    factoria.Create(typeof(SharedResource));//Indicamos que los recursos de localizacion para las anotaciones de datos estaran en la clase SharedResource, es decir que todos los archivos de recursos .resx estaran asociados a esa clase.
+}).AddJsonOptions(opciones =>
+{
+    opciones.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
 
 builder.Services.AddDbContext<ApplicationDBContext>(opciones => opciones.UseSqlServer("name=DefaultConnection"));
