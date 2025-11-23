@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskManagerMVC.Entities;
+using TaskManagerMVC.Models;
 using TaskManagerMVC.Services;
 
 namespace TaskManagerMVC.Controllers
@@ -18,9 +19,19 @@ namespace TaskManagerMVC.Controllers
         }
 
         [HttpGet("Listar")]
-        public async Task<List<TaskItem> > ObtenerTareas()
+        public async Task<List<TaskDTO>> ObtenerTareas()
         {
-            return await _context.Tasks.ToListAsync();
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+            var tareas = await _context.Tasks
+                .Where(t => t.UserCreatorId == usuarioId)
+                .OrderByDescending(t=>t.Order).
+                Select(t=> new TaskDTO
+                {
+                    Id = t.Id,
+                    Title = t.Title
+                }).ToListAsync();//A la expresion => se le llama operador lambda. Para entenderlo mejor, es como una funcion anonima que recibe un parametro t y devuelve t.UserCreatorId == usuarioId
+            return tareas;
+
         }
 
         [HttpPost("Crear")]
