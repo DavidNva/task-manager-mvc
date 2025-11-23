@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System.Globalization;
 using TaskManagerMVC;
 using TaskManagerMVC.Services;
-using Microsoft.AspNetCore.Localization;
-using System.Globalization;
-using Microsoft.AspNetCore.Mvc.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +60,9 @@ builder.Services.AddLocalization(opciones =>
     opciones.ResourcesPath = "Resources";//Carpeta donde se encuentran los archivos de recursos
 });
 builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();//Registramos el servicio para obtener el usuario autenticado
+//builder.Services.AddAutoMapper(typeof(Program));//Registramos AutoMapper
+//en .net 9 ahora se hace asi:
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 
