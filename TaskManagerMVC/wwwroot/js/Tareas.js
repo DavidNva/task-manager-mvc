@@ -44,9 +44,54 @@ async function obtenerTareas() {
     }
     const json = await respuesta.json();
     tareaListadoViewModel.tareas([]);//Limpiamos el listado])
-    json.forEach(tarea => {
-        tareaListadoViewModel.tareas.push(new TareaElementoListadoViewModel(tarea));
+
+    json.forEach(valor => {
+        tareaListadoViewModel.tareas.push(new TareaElementoListadoViewModel(valor));
     });
 
     tareaListadoViewModel.cargando(false);
 }
+
+async function actualizarOrdenTareas() {
+    const ids = obtenerIdsTareas();
+    await enviarIdsTareasAlBackend(ids);
+
+    const arregloOrdenado = tareaListadoViewModel.tareas.sorted(function (a, b) {
+        return ids.indexOf(a.id().toString()) - ids.indexOf(b.id().toString());
+    });
+
+    tareaListadoViewModel.tareas([])
+    tareaListadoViewModel.tareas(arregloOrdenado);
+}
+
+function obtenerIdsTareas() {
+    const ids = $("[name=title-tarea]").map(function () {
+        return $(this).attr("data-id");
+    }).get();
+
+    return ids;
+}
+
+
+async function enviarIdsTareasAlBackend(ids) {
+    let data = JSON.stringify(ids);
+    await fetch(`${urlTareas}/ordenar`, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}
+
+$(function () {
+    $("#reordenable").sortable({
+        axis: 'y',
+        stop: async function () {
+            await actualizarOrdenTareas();
+        }
+    })
+
+});
+
+    

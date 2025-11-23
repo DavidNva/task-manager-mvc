@@ -11,13 +11,14 @@
 </div>
 
 <div id="contenedor-listado-tareas" class="text-center">
-    <div class="text-start" data-bind="foreach: tareas">
+    <div id="reordenable" class="text-start" data-bind="foreach: tareas">
         <div name="tarea" class="border mb-2 p-2" style="cursor: pointer">
             <div data-bind="text: title, hidden: esNuevo" class="fw-bold">
             </div>
 
             <input type="text" name="title-tarea" class="input-group text-dark" autocomplete="off" 
                 data-bind="value:title, visible: esNuevo,
+                        attr: {'data-id': id},
                         event: {focusout: manegarFocusOutTituloTarea}" />
         </div>
     </div>

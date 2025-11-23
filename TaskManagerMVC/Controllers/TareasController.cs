@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TaskManagerMVC.Entities;
 using TaskManagerMVC.Models;
 using TaskManagerMVC.Services;
@@ -27,7 +28,7 @@ namespace TaskManagerMVC.Controllers
             var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
             var tareas = await _context.Tasks
                 .Where(t => t.UserCreatorId == usuarioId)
-                .OrderByDescending(t=>t.Order)
+                .OrderBy(t=>t.Order)
                 .ProjectTo<TaskDTO>(_mapper.ConfigurationProvider)//Con esto le decimos a automapper que mapee de TaskItem a TaskDTO usando la configuracion que tenemos en el profile.
                 .ToListAsync();//A la expresion => se le llama operador lambda. Para entenderlo mejor, es como una funcion anonima que recibe un parametro t y devuelve t.UserCreatorId == usuarioId
             return tareas;
@@ -59,6 +60,37 @@ namespace TaskManagerMVC.Controllers
 
             return tarea;
         }
+
+        [HttpPost("ordenar")]
+        public async Task<IActionResult> Ordenar([FromBody] int[] ids)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+
+            var tareas = await _context.Tasks
+                .Where(t => t.UserCreatorId == usuarioId).ToListAsync();
+
+            var tareasId = tareas.Select(t => t.Id);
+
+            var idsTareasNoPertenecenAlUsuario = ids.Except(tareasId).ToList();
+
+            if (idsTareasNoPertenecenAlUsuario.Any())
+            {
+                return Forbid();
+            }
+            var tareasDiccionario = tareas.ToDictionary(t => t.Id);
+
+            for (int i = 0; i < ids.Length; i++)
+            {
+                var id = ids[i];
+                var tarea = tareasDiccionario[id];
+                tarea.Order = i + 1;
+            }
+            await _context.SaveChangesAsync();
+            return Ok();
+
+        }
+
+
 
     }
 }
