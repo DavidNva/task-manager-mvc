@@ -84,6 +84,66 @@ async function enviarIdsTareasAlBackend(ids) {
     });
 }
 
+async function manejarClickTarea(tarea) {
+    if (tarea.esNuevo()) {
+        return;
+    }
+    const respuesta = await fetch(`${urlTareas}/ObtenerTareaPorId/${tarea.id()}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta);
+        return;
+    }
+    const json = await respuesta.json();
+    
+
+    tareaEditaVM.id = json.id;
+    console.log(json)
+    tareaEditaVM.title(json.title);
+    tareaEditaVM.description(json.description);
+
+    modalEditarTareaBootstrap.show();
+
+}
+
+async function manejarCambioEditarTarea() {
+    const obj = {
+        id: tareaEditaVM.id,
+        title: tareaEditaVM.title(),
+        description: tareaEditaVM.description()
+    }
+
+    if (!obj.title) {
+        return;
+    }
+    await editarTareaCompleta(obj);
+
+    const indice = tareaListadoViewModel.tareas().findIndex(t => t.id() === obj.id);
+    const tarea = tareaListadoViewModel.tareas()[indice];
+    tarea.title(obj.title);
+}
+
+async function editarTareaCompleta(tarea) {
+    const data = JSON.stringify(tarea);
+    const respuesta = await fetch(`${urlTareas}/EditarTarea/${tarea.id}`, {
+        method: "PUT",
+        body: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta);
+        throw "error";
+    }
+}
+
 $(function () {
     $("#reordenable").sortable({
         axis: 'y',

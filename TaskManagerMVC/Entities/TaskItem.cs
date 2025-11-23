@@ -10,9 +10,9 @@ namespace TaskManagerMVC.Entities
         [Required]//Esto indica que la propiedad es obligatoria (no puede ser nula), equivalente a NOT NULL en la base de datos
         [StringLength(260)]//Comentamos esto para probar ahora usando Fluent API en ApplicationDBContext.cs
         public string Title { get; set; }
-        [Required]//Esto indica que la propiedad es obligatoria (no puede ser nula), equivalente a NOT NULL en la base de datos
+        //[Required]//Esto indica que la propiedad es obligatoria (no puede ser nula), equivalente a NOT NULL en la base de datos
         [StringLength(1000)]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public int Order { get; set; }
         //public bool IsCompleted { get; set; }

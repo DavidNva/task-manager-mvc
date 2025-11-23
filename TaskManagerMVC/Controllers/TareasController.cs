@@ -50,7 +50,7 @@ namespace TaskManagerMVC.Controllers
             var tarea = new TaskItem
             {
                 Title = titulo,
-                Description = "Descripcion: " + titulo,
+                Description = "description: " + titulo,
                 UserCreatorId = usuarioId,
                 CreatedAt = DateTime.UtcNow,
                 Order = ordenMayor + 1
@@ -91,6 +91,40 @@ namespace TaskManagerMVC.Controllers
         }
 
 
+        [HttpGet("ObtenerTareaPorId/{id:int}")]
+        public async Task<ActionResult<TaskItem>>ObtenerTareaPorId(int id)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
 
+            var tarea = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id &&
+            t.UserCreatorId == usuarioId);
+
+            if(tarea is null)
+            {
+                return NotFound();
+            }
+
+            return tarea;
+        }
+
+
+        [HttpPut("EditarTarea/{id:int}")]
+        public async Task<IActionResult> EditarTarea(int id, [FromBody] TaskEditarDTO taskEditarDTO)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+            var tarea = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id && t.UserCreatorId == usuarioId);
+
+            if(tarea is null)
+            {
+                return NotFound();
+            }
+
+            tarea.Title = taskEditarDTO.Title;
+            tarea.Description = taskEditarDTO.description;
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
