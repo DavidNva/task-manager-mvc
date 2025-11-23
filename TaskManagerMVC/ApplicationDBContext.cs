@@ -30,7 +30,7 @@ namespace TaskManagerMVC
 
 
         public DbSet<TaskItem> Tasks { get; set; }//Ya con esto , ya tenemos nuestra tabla Tasks en la base de datos.
-        public DbSet<Step> Steps { get; set; } //Tabla Steps para los pasos de cada tarea.
+        public DbSet<Step> Steps { get; set; } //Tabla Steps para los steps de cada tarea.
 
         public DbSet<AttachedFile> AttachedFiles { get; set; } //Tabla AttachedFiles para los archivos adjuntos de cada tarea.
         //Cada vez que agreguemos una nueva entidad, tenemos que agregar un nuevo DbSet<T> aqui, esto es muy importante para que Entity Framework Core sepa que queremos mapear esa entidad a una tabla en la base de datos, de lo contrario no se creara la tabla en la base de datos. ni podra hacer operaciones CRUD con esa entidad.

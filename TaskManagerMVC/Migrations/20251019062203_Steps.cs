@@ -29,7 +29,7 @@ namespace TaskManagerMVC.Migrations
                         column: x => x.TaskItemId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);//Significa que si se elimina una tarea, se eliminan todos sus pasos asociados.
+                        onDelete: ReferentialAction.Cascade);//Significa que si se elimina una tarea, se eliminan todos sus steps asociados.
                 });
 
             migrationBuilder.CreateIndex(

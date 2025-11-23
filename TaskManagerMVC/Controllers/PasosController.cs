@@ -6,12 +6,12 @@ using TaskManagerMVC.Services;
 
 namespace TaskManagerMVC.Controllers
 {
-    [Route("api/pasos")]
-    public class PasosController : ControllerBase
+    [Route("api/steps")]
+    public class stepsController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
         private readonly IServicioUsuarios _servicioUsuarios;
-        public PasosController(ApplicationDBContext context, IServicioUsuarios servicioUsuarios)
+        public stepsController(ApplicationDBContext context, IServicioUsuarios servicioUsuarios)
         {
             _context = context;
             _servicioUsuarios = servicioUsuarios;
@@ -33,10 +33,10 @@ namespace TaskManagerMVC.Controllers
                 return Forbid();
             }
 
-            var existenPasos = await _context.Steps.AnyAsync(p => p.TaskItemId == tareaId);
+            var existensteps = await _context.Steps.AnyAsync(p => p.TaskItemId == tareaId);
 
             var ordenMayor = 0;
-            if (existenPasos)
+            if (existensteps)
             {
                 ordenMayor = await _context.Steps
                     .Where(p => p.TaskItemId == tareaId).Select(p => p.Order).MaxAsync();

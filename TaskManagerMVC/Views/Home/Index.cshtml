@@ -38,7 +38,7 @@
     <script src="~/js/Pasos.js" asp-append-version="true"></script>
     <script>
         const urlTareas = "/api/tareas";
-        const urlPasos = "/api/pasos";
+        const urlsteps = "/api/steps";
         const modalEditarTarea = document.getElementById('modal-editar-tarea');
         const modalEditarTareaBootstrap = new bootstrap.Modal(modalEditarTarea);
         // const tareaListadoViewModel = {
@@ -71,7 +71,7 @@
             id:0,
             title: ko.observable(''),
             description: ko.observable(''),
-            pasos: ko.observableArray([])
+            steps: ko.observableArray([])
         }
 
         const tareaListadoViewModel = new tareaListadoViewModelFn();

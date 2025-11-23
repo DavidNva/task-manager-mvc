@@ -1,19 +1,19 @@
 ﻿function manejarClickAgregarPaso() {
-    const indice = tareaEditaVM.pasos().findIndex(p => p.esNuevo());
+    const indice = tareaEditaVM.steps().findIndex(p => p.esNuevo());
 
     if (indice !== -1) {
         return;
     }
 
-    tareaEditaVM.pasos.push(new pasoViewModel({ modoEdicion: true, realizad: false }));
+    tareaEditaVM.steps.push(new pasoViewModel({ modoEdicion: true, realizad: false }));
     $("[name=txtPasoDescription]:visible").focus();
 }
 
 function manejarClickCancelarPaso() {
     if (paso.esNuevo()) {
-        tareaEditaVM.pasos.pop();
+        tareaEditaVM.steps.pop();
     } else {
-        console.log("Else cancelar pasos")
+        console.log("Else cancelar steps")
     }
 }
 
@@ -31,7 +31,7 @@ async function manejarClickSalvarPaso(paso) {
 }
 
 async function insertarPaso(paso, data, idTarea) {
-    const respuesta = await fetch(`${urlPasos}/CrearPaso/${idTarea}`, {
+    const respuesta = await fetch(`${urlsteps}/CrearPaso/${idTarea}`, {
         body: data,
         method: "POST",
         headers: {

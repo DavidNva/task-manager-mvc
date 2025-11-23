@@ -96,7 +96,9 @@ namespace TaskManagerMVC.Controllers
         {
             var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
 
-            var tarea = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id &&
+            var tarea = await _context.Tasks
+                .Include(t =>t.Steps)
+                .FirstOrDefaultAsync(t => t.Id == id &&
             t.UserCreatorId == usuarioId);
 
             if(tarea is null)
@@ -145,5 +147,6 @@ namespace TaskManagerMVC.Controllers
 
             return Ok();
         }
+    
     }
 }

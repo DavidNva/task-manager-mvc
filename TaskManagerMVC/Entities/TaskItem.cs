@@ -26,9 +26,9 @@ namespace TaskManagerMVC.Entities
                                                      //Es decir, si tenemos una instancia de TaskItem, podemos acceder al usuario creador de la siguiente manera: taskItem.UserCreator
                                                      //Si no tuvieramos esta propiedad de navegacion, tendriamos que hacer una consulta adicional a la tabla de usuarios para obtener los datos del usuario creador.
                                                      //Entonces, en resumen, la propiedad de navegacion nos facilita el acceso a los datos relacionados y nos evita tener que hacer consultas adicionales.
-        public List<Step> Steps { get; set; }//Con esto si cargo una tarea, tambien cargo sus pasos asociados.
+        public List<Step> Steps { get; set; }//Con esto si cargo una tarea, tambien cargo sus steps asociados.
                                              //public List<Step> Steps { get; set; } = new List<Step>();
-                                             //La relacion con Steps es de uno a muchos, es decir una tarea puede tener muchos pasos asociados y cada paso pertenece a una sola tarea.
+                                             //La relacion con Steps es de uno a muchos, es decir una tarea puede tener muchos steps asociados y cada paso pertenece a una sola tarea.
         public List<AttachedFile> AttachedFiles { get; set; }
         //La relacion con AttachedFiles es de uno a muchos, es decir una tarea puede tener muchos archivos adjuntos asociados y cada archivo adjunto pertenece a una sola tarea.
 

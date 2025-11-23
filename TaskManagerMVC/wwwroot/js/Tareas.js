@@ -4,7 +4,6 @@
     $("[name=title-tarea]").last().focus();
 }
 
-
 async function manegarFocusOutTituloTarea(tarea) {
     const title = tarea.title();
 
@@ -72,7 +71,6 @@ function obtenerIdsTareas() {
     return ids;
 }
 
-
 async function enviarIdsTareasAlBackend(ids) {
     let data = JSON.stringify(ids);
     await fetch(`${urlTareas}/ordenar`, {
@@ -101,11 +99,16 @@ async function manejarClickTarea(tarea) {
     }
     const json = await respuesta.json();
     
-
     tareaEditaVM.id = json.id;
     tareaEditaVM.title(json.title);
     tareaEditaVM.description(json.description);
+    tareaEditaVM.steps([]);
 
+    json.steps.forEach(paso => {
+        tareaEditaVM.steps.push(
+            new pasoViewModel({...paso, modoEdicion: false})
+        )
+    })
     modalEditarTareaBootstrap.show();
 
 }
