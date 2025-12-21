@@ -7,7 +7,9 @@
     <div class="row mt-2">
         <div class="col-1">
             <input type="checkbox" class="form-check-input" name="chbPaso"
-                   data-bind="{checked: IsCompleted, click: manejarClickCheckboxPaso}" />
+                   data-bind="checked: IsCompleted, 
+                                click: manejarClickCheckboxPaso,
+                                attr:{'data-id':id}" />
         </div>
         <div class="col-11">
             <span style="cursor:pointer" 

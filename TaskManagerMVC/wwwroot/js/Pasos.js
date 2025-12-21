@@ -141,3 +141,39 @@ async function borrarPaso(paso) {
         tarea.pasosRealizados(tarea.pasosRealizados() - 1);
     }
 }
+
+async function actualizarOrdenPasos() {
+    const ids = obtenerIdsPasos();
+    await enviarIdsPasosAlBackend(ids);
+
+    const arregloOrganizado = tareaEditaVM.steps.sorted(function (a, b) {
+        return ids.indexOf(a.id().toString()) - ids.indexOf(b.id().toString());
+    })
+    tareaEditaVM.steps(arregloOrganizado);
+}
+
+function obtenerIdsPasos() {
+    const ids = $("[name=chbPaso]").map(function () {
+        return $(this).attr('data-id');
+    }).get();
+    return ids;
+}
+
+async function enviarIdsPasosAlBackend(ids) {
+    var data = JSON.stringify(ids);
+    const respuesta = await fetch(`${urlsteps}/ordenar/${tareaEditaVM.id}`, {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Content-Type':'application/json'
+        }
+    });
+}
+$(function () {
+    $("#reordenable-pasos").sortable({
+        axis: 'y',
+        stop: async function () {
+            await actualizarOrdenPasos();
+        }
+    });
+})

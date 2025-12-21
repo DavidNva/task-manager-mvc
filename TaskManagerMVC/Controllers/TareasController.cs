@@ -97,7 +97,7 @@ namespace TaskManagerMVC.Controllers
             var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
 
             var tarea = await _context.Tasks
-                .Include(t =>t.Steps)
+                .Include(t =>t.Steps.OrderBy(p=>p.Order))
                 .FirstOrDefaultAsync(t => t.Id == id &&
             t.UserCreatorId == usuarioId);
 
