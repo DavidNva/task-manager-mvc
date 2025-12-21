@@ -8,7 +8,10 @@ namespace TaskManagerMVC.Services
     {
         public AutoMapperProfiles()
         {
-            CreateMap<TaskItem, TaskDTO>();
+            CreateMap<TaskItem, TaskDTO>()
+                .ForMember(dto => dto.PasosTotal, ent => ent.MapFrom(x => x.Steps.Count()))
+                .ForMember(dto => dto.PasosRealizados, ent =>
+                    ent.MapFrom(x => x.Steps.Where(p => p.IsCompleted).Count()));
             CreateMap<TaskDTO, TaskItem>();
         }
     }
