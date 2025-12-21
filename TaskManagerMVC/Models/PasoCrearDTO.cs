@@ -6,6 +6,6 @@ namespace TaskManagerMVC.Models
     {
         [Required]
         public string Description { get; set; }
-        public bool Realizado { get; set; }
+        public bool IsCompleted { get; set; }
     }
 }

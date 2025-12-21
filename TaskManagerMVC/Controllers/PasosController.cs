@@ -47,11 +47,31 @@ namespace TaskManagerMVC.Controllers
             paso.TaskItemId = tareaId;
             paso.Order = ordenMayor + 1;
             paso.Description = pasoCrearDTO.Description;
-            paso.IsCompleted = pasoCrearDTO.Realizado;
+            paso.IsCompleted = pasoCrearDTO.IsCompleted;
 
             _context.Add(paso);
             await _context.SaveChangesAsync();
             return paso;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(Guid id, [FromBody] PasoCrearDTO pasoCrearDTO)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+            var paso = await _context.Steps.Include(p => p.TaskItem).FirstOrDefaultAsync(p => p.Id == id);
+            if(paso is null)
+            {
+                return NotFound();
+            }
+            if(paso.TaskItem.UserCreatorId != usuarioId)
+            {
+                return Forbid();
+            }
+
+            paso.Description = pasoCrearDTO.Description;
+            paso.IsCompleted = pasoCrearDTO.IsCompleted;
+            await _context.SaveChangesAsync();
+            return Ok();
         }
     }
 }

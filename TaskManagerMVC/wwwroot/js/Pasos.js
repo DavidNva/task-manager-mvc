@@ -5,15 +5,16 @@
         return;
     }
 
-    tareaEditaVM.steps.push(new pasoViewModel({ modoEdicion: true, realizad: false }));
+    tareaEditaVM.steps.push(new pasoViewModel({ modoEdicion: true, isCompleted: false }));
     $("[name=txtPasoDescription]:visible").focus();
 }
 
-function manejarClickCancelarPaso() {
+function manejarClickCancelarPaso(paso) {
     if (paso.esNuevo()) {
         tareaEditaVM.steps.pop();
     } else {
-        console.log("Else cancelar steps")
+        paso.modoEdicion(false);
+        paso.description(paso.descriptionAnterior);
     }
 }
 
@@ -23,10 +24,18 @@ async function manejarClickSalvarPaso(paso) {
     const idTarea = tareaEditaVM.id;
     const data = obtenerCuerpoPeticionPaso(paso);
 
+    const descripcion = paso.description();
+    if (!descripcion) {
+        paso.descripcion(paso.descriptionAnterior);
+        if (esNuevo) {
+            tareaEditaVM.pasos.pop();
+        }
+        return;
+    }
     if (esNuevo) {
         await insertarPaso(paso, data, idTarea);
     } else {
-        console.log("Actualizando");
+        actualizarPaso(data, paso.id());
     }
 }
 
@@ -49,6 +58,38 @@ async function insertarPaso(paso, data, idTarea) {
 function obtenerCuerpoPeticionPaso(paso) {
     return JSON.stringify({
         description: paso.description(),
-        realizado: paso.realizado()
+        IsCompleted: paso.IsCompleted()
     });
+}
+
+function manejarClickDescripcionPaso(paso) {
+    paso.modoEdicion(true);
+    paso.descriptionAnterior = paso.description();
+    $("[name=txtPasoDescription]:visible").focus();
+}
+
+async function actualizarPaso(data, id) {
+    const respuesta = await fetch(`${urlsteps}/${id}`,{
+        body: data,
+        method:"PUT",
+        headers: {
+            'Content-Type':'application/json'
+        }
+    });
+    if (!respuesta.ok) {
+        manejarErrorApi(respuesta);
+    }
+}
+
+
+function manejarClickCheckboxPaso(paso) {
+    if (paso.esNuevo()) {
+        return true;
+    }
+
+    const data = obtenerCuerpoPeticionPaso(paso);
+    console.log(data);
+    actualizarPaso(data, paso.id());
+
+    return true;
 }

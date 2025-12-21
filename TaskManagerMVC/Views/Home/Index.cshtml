@@ -62,6 +62,7 @@
             var self = this;
             self.id = ko.observable(id);
             self.title = ko.observable(title);
+
             self.esNuevo = ko.pureComputed(function(){
                 return self.id() ==0;
             })
@@ -76,11 +77,12 @@
 
         const tareaListadoViewModel = new tareaListadoViewModelFn();
 
-        function pasoViewModel({id, description, realizado, modoEdicion}){
+        function pasoViewModel({id, description, isCompleted, modoEdicion}){
             var self = this;
             self.id = ko.observable(id || 0);
             self.description = ko.observable(description || '');
-            self.realizado = ko.observable(realizado);
+            self.descriptionAnterior = '';
+            self.IsCompleted = ko.observable(isCompleted);
             self.modoEdicion = ko.observable(modoEdicion);
 
             self.esNuevo = ko.pureComputed(function(){
