@@ -73,5 +73,24 @@ namespace TaskManagerMVC.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+            var paso = await _context.Steps.Include(p => p.TaskItem).FirstOrDefaultAsync(t => t.Id == id);
+            if(paso is null)
+            {
+                return NotFound();
+            }
+
+            if(paso.TaskItem.UserCreatorId != usuarioId)
+            {
+                return Forbid();
+            }
+            _context.Remove(paso);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }
